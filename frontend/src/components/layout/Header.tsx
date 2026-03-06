@@ -10,7 +10,6 @@ import {
 import { LogoSvg } from './LogoSvg'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
-import { useSettingsStore } from '@/store/settingsStore'
 
 interface HeaderProps {
   onOpenMenu: () => void
@@ -32,7 +31,7 @@ export function Header({ onOpenMenu, onOpenCart }: HeaderProps) {
   const totalItems = useCartStore((s) => s.totalItems())
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated())
   const user = useAuthStore((s) => s.user)
-  const storeName = useSettingsStore((s) => s.settings?.store_name ?? 'Swell')
+
 
   return (
     <header className="flex items-center justify-between px-10 py-5 bg-white border-b border-swell-border sticky top-0 z-50">

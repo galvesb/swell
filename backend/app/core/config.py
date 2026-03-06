@@ -19,6 +19,8 @@ class Settings(BaseSettings):
 
     ALLOWED_ORIGINS: list[str] = ["http://localhost", "http://localhost:80"]
 
+    SECURE_COOKIES: bool = False
+
     UPLOAD_DIR: str = "/app/uploads"
     MAX_IMAGE_SIZE_MB: int = 5
 

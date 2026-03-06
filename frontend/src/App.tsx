@@ -16,6 +16,22 @@ import { AdminProductForm } from '@/pages/admin/AdminProductForm'
 import { AdminLayout } from '@/components/admin/AdminLayout'
 import { SiteSettingsPage } from '@/pages/admin/SiteSettingsPage'
 import { useSettingsStore } from '@/store/settingsStore'
+import { useAuthStore } from '@/store/authStore'
+import { authApi } from '@/api/auth'
+import axios from 'axios'
+
+const BASE_URL = import.meta.env.VITE_API_URL ?? '/api/v1'
+
+async function restoreSession() {
+  try {
+    const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {}, { withCredentials: true })
+    useAuthStore.getState().setToken(data.access_token)
+    const user = await authApi.me()
+    useAuthStore.getState().setUser(user)
+  } catch {
+    // No valid refresh token — user stays logged out
+  }
+}
 
 function Layout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -40,7 +56,14 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const init = useSettingsStore((s) => s.init)
-  useEffect(() => { init() }, [])
+  const [authReady, setAuthReady] = useState(false)
+
+  useEffect(() => {
+    init()
+    restoreSession().finally(() => setAuthReady(true))
+  }, [])
+
+  if (!authReady) return null
 
   return (
     <BrowserRouter>

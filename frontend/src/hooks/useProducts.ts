@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { productsApi } from '@/api/products'
-import type { Product, ProductListResponse } from '@/types/product'
+import type { Product, ProductListResponse, SortBy } from '@/types/product'
 
 export function useProducts(category?: string) {
   const [searchParams] = useSearchParams()
@@ -21,7 +21,7 @@ export function useProducts(category?: string) {
       ...(searchParams.getAll('sizes').length && { sizes: searchParams.getAll('sizes') }),
       ...(searchParams.getAll('colors').length && { colors: searchParams.getAll('colors') }),
       ...(searchParams.getAll('tags').length && { tags: searchParams.getAll('tags') as Product['tags'] }),
-      sort_by: (searchParams.get('sort_by') as Product['tags'][number]) || 'relevance',
+      sort_by: (searchParams.get('sort_by') as SortBy) || 'relevance',
       page: Number(searchParams.get('page') || 1),
       page_size: 20,
     }

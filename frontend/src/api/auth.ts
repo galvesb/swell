@@ -14,7 +14,7 @@ export interface RegisterPayload {
 
 export const authApi = {
   login: async (payload: LoginPayload): Promise<{ access_token: string }> => {
-    const form = new URLSearchParams(payload)
+    const form = new URLSearchParams(payload as unknown as Record<string, string>)
     const { data } = await api.post('/auth/login', form, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })

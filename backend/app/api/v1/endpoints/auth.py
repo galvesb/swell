@@ -52,7 +52,7 @@ async def login(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=not settings.DEBUG,
+        secure=settings.SECURE_COOKIES,
         samesite="strict",
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 3600,
         path="/api/v1/auth/refresh",
