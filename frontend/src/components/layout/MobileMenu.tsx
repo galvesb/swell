@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { X, User, MagnifyingGlass, Tote, Plus } from '@phosphor-icons/react'
-import { LogoSvg } from './LogoSvg'
 import { useCartStore } from '@/store/cartStore'
 
 interface MobileMenuProps {
@@ -45,10 +44,6 @@ export function MobileMenu({ isOpen, onClose, onOpenCart }: MobileMenuProps) {
               <User size={24} weight="light" />
             </Link>
           </div>
-
-          <Link to="/" className="absolute left-1/2 -translate-x-1/2" onClick={onClose}>
-            <LogoSvg className="w-9" />
-          </Link>
 
           <div className="flex gap-4 items-center">
             <MagnifyingGlass size={24} weight="light" />

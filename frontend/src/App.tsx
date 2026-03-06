@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Header } from '@/components/layout/Header'
 import { MobileMenu } from '@/components/layout/MobileMenu'
@@ -13,6 +13,9 @@ import { RegisterPage } from '@/pages/RegisterPage'
 import { ForbiddenPage } from '@/pages/ForbiddenPage'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { AdminProductForm } from '@/pages/admin/AdminProductForm'
+import { AdminLayout } from '@/components/admin/AdminLayout'
+import { SiteSettingsPage } from '@/pages/admin/SiteSettingsPage'
+import { useSettingsStore } from '@/store/settingsStore'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -36,6 +39,9 @@ function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const init = useSettingsStore((s) => s.init)
+  useEffect(() => { init() }, [])
+
   return (
     <BrowserRouter>
       <Routes>
@@ -51,8 +57,11 @@ export default function App() {
 
         {/* Admin */}
         <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/produtos/:id" element={<AdminProductForm />} />
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/produtos/:id" element={<AdminProductForm />} />
+            <Route path="/admin/site" element={<SiteSettingsPage />} />
+          </Route>
         </Route>
 
         {/* Protected */}

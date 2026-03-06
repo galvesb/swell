@@ -13,6 +13,7 @@ from app.core.security import hash_password
 from app.models.user import User
 from app.models.category import Category
 from app.models.product import Product, ColorOption
+from app.models.site_settings import SiteSettings
 
 
 CATEGORIES = [
@@ -127,6 +128,15 @@ async def main() -> None:
             product = Product(**prod_data, colors=colors)
             await product.insert()
             print(f"✓ Product: {product.name}")
+
+    # SiteSettings singleton
+    existing_settings = await SiteSettings.find_one()
+    if not existing_settings:
+        site = SiteSettings()
+        await site.insert()
+        print("✓ SiteSettings padrão criado")
+    else:
+        print("  SiteSettings já existe")
 
     print("\nSeed complete!")
     client.close()

@@ -10,6 +10,7 @@ import {
 import { LogoSvg } from './LogoSvg'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
+import { useSettingsStore } from '@/store/settingsStore'
 
 interface HeaderProps {
   onOpenMenu: () => void
@@ -31,16 +32,17 @@ export function Header({ onOpenMenu, onOpenCart }: HeaderProps) {
   const totalItems = useCartStore((s) => s.totalItems())
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated())
   const user = useAuthStore((s) => s.user)
+  const storeName = useSettingsStore((s) => s.settings?.store_name ?? 'Swell')
 
   return (
     <header className="flex items-center justify-between px-10 py-5 bg-white border-b border-swell-border sticky top-0 z-50">
       {/* Mobile left */}
       <div className="flex gap-4 items-center text-2xl font-light md:hidden">
         <button onClick={onOpenMenu} aria-label="Menu">
-          <List size={26} weight="light" />
+          <List size={24} weight="light" />
         </button>
         <Link to={isAuthenticated ? '/conta' : '/login'}>
-          <User size={26} weight="light" />
+          <User size={24} weight="light" />
         </Link>
       </div>
 
@@ -51,7 +53,7 @@ export function Header({ onOpenMenu, onOpenCart }: HeaderProps) {
 
       {/* Mobile logo (centered) */}
       <Link to="/" className="absolute left-1/2 -translate-x-1/2 md:hidden">
-        <LogoSvg className="w-9" />
+        <LogoSvg className="w-32" />
       </Link>
 
       {/* Desktop nav */}

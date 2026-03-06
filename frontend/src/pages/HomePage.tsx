@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useSettingsStore } from '@/store/settingsStore'
 
 const CATEGORIES = [
   { slug: 'new-in', label: 'New In', img: 'https://images.unsplash.com/photo-1550614000-4b95d4edfa21?auto=format&fit=crop&w=500&q=80' },
@@ -7,19 +8,26 @@ const CATEGORIES = [
   { slug: 'sale', label: 'Sale', img: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=500&q=80' },
 ]
 
+const DEFAULT_HERO = 'https://images.unsplash.com/photo-1515347619362-7dd3e215442e?auto=format&fit=crop&w=1400&q=80'
+
 export function HomePage() {
+  const settings = useSettingsStore((s) => s.settings)
+  const storeName = settings?.store_name ?? 'Swell'
+  const heroText = settings?.hero_text ?? 'Nova Coleção 2025'
+  const heroImage = settings?.hero_image ?? DEFAULT_HERO
+
   return (
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden" style={{ height: '70vh', minHeight: 400 }}>
         <img
-          src="https://images.unsplash.com/photo-1515347619362-7dd3e215442e?auto=format&fit=crop&w=1400&q=80"
-          alt="Swell Store"
+          src={heroImage}
+          alt={storeName}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/20 flex flex-col items-center justify-center text-white text-center px-5">
-          <h1 className="font-serif text-5xl md:text-7xl font-normal mb-4">Swell Store</h1>
-          <p className="text-sm md:text-base font-light tracking-widest mb-8 uppercase">Nova Coleção 2025</p>
+          <h1 className="font-serif text-5xl md:text-7xl font-normal mb-4">{storeName}</h1>
+          <p className="text-sm md:text-base font-light tracking-widest mb-8 uppercase">{heroText}</p>
           <Link
             to="/categoria/new-in"
             className="border border-white px-10 py-3.5 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"

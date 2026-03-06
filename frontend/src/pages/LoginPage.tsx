@@ -29,10 +29,9 @@ export function LoginPage() {
     <div className="min-h-screen bg-swell-bg flex items-center justify-center px-5">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block">
-            <LogoSvg className="w-12 mx-auto" />
+          <Link to="/" className="flex justify-center">
+            <LogoSvg className="w-56" />
           </Link>
-          <h1 className="font-serif text-2xl mt-4">Entrar</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

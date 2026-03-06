@@ -7,8 +7,8 @@ const config: Config = {
       colors: {
         swell: {
           bg: '#FAF9F7',
-          accent: '#A98F81',
-          'accent-hover': '#91776b',
+          accent: 'var(--swell-accent)',
+          'accent-hover': 'var(--swell-accent-hover)',
           alert: '#E26E6E',
           'text-dark': '#333333',
           'text-light': '#666666',

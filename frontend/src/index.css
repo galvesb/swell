@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --swell-accent: #A98F81;
+  --swell-accent-hover: #91776b;
+}
+
 @layer base {
   body {
     @apply bg-swell-bg text-swell-text-dark font-sans;
