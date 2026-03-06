@@ -6,8 +6,7 @@ import { ImageUpload } from '@/components/admin/ImageUpload'
 import type { Product } from '@/types/product'
 
 const ALL_SIZES = ['XPP', 'PP', 'P', 'M', 'G', 'GG', 'XGG', 'U']
-const ALL_TAGS = ['new_in', 'best_seller', 'last_pieces', 'sale'] as const
-const CATEGORIES = ['alfaiataria', 'ocasioes', 'colecoes', 'best-sellers', 'roupas', 'ultimas-pecas', 'sale', 'new-in']
+const ALL_TAGS = ['novos', 'mais_vendidos', 'ultimas_pecas', 'promocoes', 'principal'] as const
 
 export function AdminProductForm() {
   const { id } = useParams<{ id: string }>()
@@ -18,7 +17,6 @@ export function AdminProductForm() {
   const [form, setForm] = useState({
     name: '',
     description: '',
-    category: '',
     price: '',
     sale_price: '',
     stock: '',
@@ -39,7 +37,6 @@ export function AdminProductForm() {
           setForm({
             name: found.name,
             description: found.description,
-            category: found.category,
             price: String(found.price),
             sale_price: found.sale_price ? String(found.sale_price) : '',
             stock: String(found.stock),
@@ -73,7 +70,7 @@ export function AdminProductForm() {
       const payload = {
         name: form.name,
         description: form.description,
-        category: form.category,
+        category: 'roupas',
         price: Number(form.price),
         sale_price: form.sale_price ? Number(form.sale_price) : null,
         stock: Number(form.stock),
@@ -85,10 +82,11 @@ export function AdminProductForm() {
 
       if (isEditing && id) {
         await productsApi.update(id, payload)
+        navigate('/admin')
       } else {
-        await productsApi.create({ ...payload, colors: [] })
+        const created = await productsApi.create({ ...payload, colors: [] })
+        navigate(`/admin/produtos/${created.id}`)
       }
-      navigate('/admin')
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
       setError(msg ?? 'Erro ao salvar produto.')
@@ -131,22 +129,6 @@ export function AdminProductForm() {
             rows={4}
             className="w-full border border-swell-border px-4 py-3 text-sm focus:outline-none focus:border-swell-accent resize-none"
           />
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block text-xs uppercase tracking-wider mb-1.5">Categoria *</label>
-          <select
-            value={form.category}
-            onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-            required
-            className="w-full border border-swell-border px-4 py-3 text-sm focus:outline-none focus:border-swell-accent"
-          >
-            <option value="">Selecione...</option>
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
         </div>
 
         {/* Price + Sale price + Stock */}

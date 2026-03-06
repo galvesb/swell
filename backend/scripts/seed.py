@@ -33,7 +33,7 @@ PRODUCTS = [
         "slug": "blazer-alfaiataria-preto",
         "description": "Blazer de alfaiataria com caimento perfeito para todas as ocasiões.",
         "category": "alfaiataria",
-        "tags": ["new_in", "best_seller"],
+        "tags": ["novos", "mais_vendidos", "principal"],
         "price": 599.90,
         "sale_price": None,
         "stock": 15,
@@ -48,7 +48,7 @@ PRODUCTS = [
         "slug": "macacao-chiara",
         "description": "Macacão elegante com tecido premium e acabamento impecável.",
         "category": "roupas",
-        "tags": ["best_seller"],
+        "tags": ["mais_vendidos", "principal"],
         "price": 419.90,
         "sale_price": None,
         "stock": 8,
@@ -66,7 +66,7 @@ PRODUCTS = [
         "slug": "vestido-midi-florido",
         "description": "Vestido midi com estampa floral e tecido fluido.",
         "category": "ocasioes",
-        "tags": ["new_in"],
+        "tags": ["novos", "principal"],
         "price": 349.90,
         "sale_price": 279.90,
         "stock": 3,
@@ -81,7 +81,7 @@ PRODUCTS = [
         "slug": "calca-wide-leg-branca",
         "description": "Calça wide leg em tecido de alfaiataria. Última peça!",
         "category": "alfaiataria",
-        "tags": ["last_pieces", "sale"],
+        "tags": ["ultimas_pecas", "promocoes"],
         "price": 289.90,
         "sale_price": 199.90,
         "stock": 2,
@@ -112,22 +112,23 @@ async def main() -> None:
     else:
         print("  Admin user already exists")
 
-    # Categories
+    # Categories — limpa e recria
+    await Category.find_all().delete()
+    print("✓ Categories cleared")
     for cat_data in CATEGORIES:
-        existing = await Category.find_one(Category.slug == cat_data["slug"])
-        if not existing:
-            cat = Category(**cat_data)
-            await cat.insert()
-            print(f"✓ Category: {cat_data['name']}")
+        cat = Category(**cat_data)
+        await cat.insert()
+        print(f"✓ Category: {cat_data['name']}")
 
-    # Products
+    # Products — limpa e recria
+    await Product.find_all().delete()
+    print("✓ Products cleared")
     for prod_data in PRODUCTS:
-        existing = await Product.find_one(Product.slug == prod_data["slug"])
-        if not existing:
-            colors = [ColorOption(**c) for c in prod_data.pop("colors")]
-            product = Product(**prod_data, colors=colors)
-            await product.insert()
-            print(f"✓ Product: {product.name}")
+        data = {**prod_data}
+        colors = [ColorOption(**c) for c in data.pop("colors")]
+        product = Product(**data, colors=colors)
+        await product.insert()
+        print(f"✓ Product: {product.name}")
 
     # SiteSettings singleton
     existing_settings = await SiteSettings.find_one()

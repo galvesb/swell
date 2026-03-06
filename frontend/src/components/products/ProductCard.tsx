@@ -48,19 +48,19 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Tags */}
         <div className="absolute top-3 left-3 flex flex-col gap-1">
-          {product.tags.includes('new_in') && (
+          {product.tags.includes('novos') && (
             <span className="text-[10px] text-swell-alert font-medium uppercase tracking-wide">
               novo!
             </span>
           )}
-          {product.tags.includes('last_pieces') && (
+          {product.tags.includes('ultimas_pecas') && (
             <span className="text-[10px] text-swell-alert font-medium italic">
               vai acabar!
             </span>
           )}
-          {product.tags.includes('sale') && (
+          {product.tags.includes('promocoes') && (
             <span className="text-[10px] bg-swell-alert text-white px-1.5 py-0.5 uppercase">
-              Sale
+              Promoção
             </span>
           )}
         </div>

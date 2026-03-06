@@ -1,12 +1,10 @@
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import { CaretLeft, CaretRight } from '@phosphor-icons/react'
+import useEmblaCarousel from 'embla-carousel-react'
 import { useSettingsStore } from '@/store/settingsStore'
-
-const CATEGORIES = [
-  { slug: 'new-in', label: 'New In', img: 'https://images.unsplash.com/photo-1550614000-4b95d4edfa21?auto=format&fit=crop&w=500&q=80' },
-  { slug: 'alfaiataria', label: 'Alfaiataria', img: 'https://images.unsplash.com/photo-1515347619362-7dd3e215442e?auto=format&fit=crop&w=500&q=80' },
-  { slug: 'roupas', label: 'Roupas', img: 'https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=500&q=80' },
-  { slug: 'sale', label: 'Sale', img: 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=500&q=80' },
-]
+import { productsApi } from '@/api/products'
+import type { Product } from '@/types/product'
 
 const DEFAULT_HERO = 'https://images.unsplash.com/photo-1515347619362-7dd3e215442e?auto=format&fit=crop&w=1400&q=80'
 
@@ -15,6 +13,15 @@ export function HomePage() {
   const storeName = settings?.store_name ?? 'Swell'
   const heroText = settings?.hero_text ?? 'Nova Coleção 2025'
   const heroImage = settings?.hero_image ?? DEFAULT_HERO
+
+  const [principais, setPrincipais] = useState<Product[]>([])
+
+  useEffect(() => {
+    productsApi
+      .list({ tags: ['principal'], page_size: 20 })
+      .then((res) => setPrincipais(res.items))
+      .catch(() => {})
+  }, [])
 
   return (
     <div>
@@ -37,24 +44,111 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Categories grid */}
-      <section className="px-6 md:px-10 py-16">
-        <h2 className="font-serif text-2xl text-center mb-10">Nossas Categorias</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          {CATEGORIES.map((cat) => (
-            <Link key={cat.slug} to={`/categoria/${cat.slug}`} className="group relative overflow-hidden" style={{ aspectRatio: '2/3' }}>
-              <img
-                src={cat.img}
-                alt={cat.label}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-black/30 flex items-end p-4">
-                <span className="text-white text-xs uppercase tracking-widest font-medium">{cat.label}</span>
-              </div>
-            </Link>
+      {/* Principais */}
+      {principais.length > 0 && (
+        <section className="px-6 md:px-10 py-16">
+          <h2 className="font-serif text-2xl text-center mb-10">Principais</h2>
+
+          {/* Mobile: grid 2 colunas */}
+          <div className="grid grid-cols-2 gap-2 md:hidden">
+            {principais.map((product) => (
+              <PrincipalCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          {/* Desktop: carrossel Embla */}
+          <div className="hidden md:block">
+            <PrincipaisCarousel products={principais} />
+          </div>
+        </section>
+      )}
+    </div>
+  )
+}
+
+function PrincipalCard({ product }: { product: Product }) {
+  const displayPrice = product.sale_price ?? product.price
+  const hasDiscount = product.sale_price !== null && product.sale_price < product.price
+
+  return (
+    <Link to={`/produto/${product.slug}`} className="group relative overflow-hidden" style={{ aspectRatio: '2/3' }}>
+      <img
+        src={product.images[0]}
+        alt={product.name}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-black/30 flex flex-col items-start justify-end p-4">
+        <span className="text-white text-xs uppercase tracking-widest font-medium">{product.name}</span>
+        <div className="flex items-center gap-2 mt-1">
+          {hasDiscount && (
+            <span className="text-white/60 text-xs line-through">
+              {product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </span>
+          )}
+          <span className="text-white text-xs font-medium">
+            {displayPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+function PrincipaisCarousel({ products }: { products: Product[] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'start',
+    slidesToScroll: 4,
+    containScroll: 'trimSnaps',
+  })
+
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return
+    setCanScrollPrev(emblaApi.canScrollPrev())
+    setCanScrollNext(emblaApi.canScrollNext())
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    onSelect()
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+  }, [emblaApi, onSelect])
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex gap-2">
+          {products.map((product) => (
+            <div key={product.id} className="flex-none w-[calc(25%-6px)]">
+              <PrincipalCard product={product} />
+            </div>
           ))}
         </div>
-      </section>
+      </div>
+
+      {canScrollPrev && (
+        <button
+          onClick={() => emblaApi?.scrollPrev()}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"
+          aria-label="Anterior"
+        >
+          <CaretLeft size={20} />
+        </button>
+      )}
+
+      {canScrollNext && (
+        <button
+          onClick={() => emblaApi?.scrollNext()}
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-colors"
+          aria-label="Próximo"
+        >
+          <CaretRight size={20} />
+        </button>
+      )}
     </div>
   )
 }

@@ -3,7 +3,7 @@ export interface ColorOption {
   hex: string
 }
 
-export type ProductTag = 'new_in' | 'best_seller' | 'last_pieces' | 'sale'
+export type ProductTag = 'novos' | 'mais_vendidos' | 'ultimas_pecas' | 'promocoes' | 'principal'
 export type SortBy = 'relevance' | 'price_asc' | 'price_desc' | 'newest' | 'best_selling'
 
 export interface Product {

@@ -90,10 +90,10 @@ export function ProductDetailPage() {
         <div className="flex flex-col">
           {/* Tags */}
           <div className="flex gap-2 mb-3">
-            {product.tags.includes('new_in') && (
+            {product.tags.includes('novos') && (
               <span className="text-swell-alert text-xs italic">novo!</span>
             )}
-            {product.tags.includes('last_pieces') && (
+            {product.tags.includes('ultimas_pecas') && (
               <span className="text-swell-alert text-xs italic">vai acabar!</span>
             )}
           </div>

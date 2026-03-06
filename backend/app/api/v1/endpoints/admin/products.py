@@ -21,13 +21,10 @@ class DeleteImageRequest(BaseModel):
 async def admin_list_products(
     page: int = 1,
     page_size: int = 20,
-    category: str | None = None,
     _admin: User = Depends(require_admin),
     service: ProductService = Depends(get_product_service),
 ) -> ProductListResponse:
-    from app.schemas.product import ProductFilters
-    filters = ProductFilters(page=page, page_size=page_size, category=category)
-    return await service.list_products(filters)
+    return await service.list_products_admin(page, page_size)
 
 
 @router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)

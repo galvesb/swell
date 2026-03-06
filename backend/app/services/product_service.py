@@ -39,6 +39,15 @@ class ProductService:
     def __init__(self, product_repo: ProductRepository) -> None:
         self._repo = product_repo
 
+    async def list_products_admin(self, page: int, page_size: int) -> ProductListResponse:
+        items, total = await self._repo.find_all_admin(page=page, page_size=page_size)
+        return ProductListResponse.build(
+            items=[_to_response(p) for p in items],
+            total=total,
+            page=page,
+            page_size=page_size,
+        )
+
     async def list_products(self, filters: ProductFilters) -> ProductListResponse:
         items, total = await self._repo.find_with_filters(
             category=filters.category,

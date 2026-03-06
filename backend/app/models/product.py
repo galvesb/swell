@@ -15,7 +15,7 @@ class Product(Document):
     slug: Indexed(str, unique=True)  # type: ignore[valid-type]
     description: str = ""
     category: Indexed(str)  # type: ignore[valid-type]
-    tags: list[Literal["new_in", "best_seller", "last_pieces", "sale"]] = []
+    tags: list[Literal["novos", "mais_vendidos", "ultimas_pecas", "promocoes", "principal"]] = []
     price: float
     sale_price: float | None = None
     stock: int = 0

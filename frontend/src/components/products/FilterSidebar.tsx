@@ -146,10 +146,10 @@ export function FilterSidebar({ isOpen, onClose }: FilterSidebarProps) {
             <h3 className="text-xs uppercase tracking-wider font-medium mb-3">Filtros rápidos</h3>
             <div className="flex flex-wrap gap-2">
               {[
-                { value: 'new_in', label: 'Novo!' },
-                { value: 'sale', label: 'Sale' },
-                { value: 'last_pieces', label: 'Últimas Peças' },
-                { value: 'best_seller', label: 'Best Seller' },
+                { value: 'novos', label: 'Novo!' },
+                { value: 'promocoes', label: 'Promoções' },
+                { value: 'ultimas_pecas', label: 'Últimas Peças' },
+                { value: 'mais_vendidos', label: 'Mais Vendido' },
               ].map((tag) => {
                 const selected = getParamArray('tags').includes(tag.value)
                 return (

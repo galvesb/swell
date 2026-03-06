@@ -61,6 +61,18 @@ class ProductRepository(BaseRepository[Product]):
         items = await query.sort(sort_spec).skip(skip).limit(page_size).to_list()
         return items, total
 
+    async def find_all_admin(
+        self,
+        *,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> tuple[list[Product], int]:
+        query = Product.find()
+        total = await query.count()
+        skip = (page - 1) * page_size
+        items = await query.sort([("created_at", DESCENDING)]).skip(skip).limit(page_size).to_list()
+        return items, total
+
     async def find_by_id_active(self, product_id: str) -> Optional[Product]:
         return await Product.get(product_id)
 
