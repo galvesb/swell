@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-swell-bg text-swell-text-dark font-sans;
+    overflow-x: hidden;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+@layer utilities {
+  .sidebar-transition {
+    transition: transform 0.4s cubic-bezier(0.77, 0.2, 0.05, 1);
+  }
+}
