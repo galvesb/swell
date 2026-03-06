@@ -17,14 +17,11 @@ interface HeaderProps {
 }
 
 const NAV_LINKS = [
-  { label: 'New In', hasDropdown: true, tag: 'new_in' },
-  { label: 'Ocasiões', hasDropdown: true },
-  { label: 'Coleções', hasDropdown: true },
-  { label: 'Best Sellers', hasDropdown: false },
-  { label: 'Roupas', hasDropdown: true },
-  { label: 'Últimas Peças', hasDropdown: false },
-  { label: 'Sale', hasDropdown: true },
-  { label: 'Sobre', hasDropdown: true },
+  { label: 'Novas Peças', slug: 'new-in', hasDropdown: false },
+  { label: 'Roupas', slug: 'roupas', hasDropdown: true },
+  { label: 'Últimas Peças', slug: 'ultimas-pecas', hasDropdown: false },
+  { label: 'Promoções', slug: 'sale', hasDropdown: false },
+  { label: 'Sobre', slug: 'sobre', hasDropdown: false },
 ]
 
 export function Header({ onOpenMenu, onOpenCart }: HeaderProps) {
@@ -60,7 +57,7 @@ export function Header({ onOpenMenu, onOpenCart }: HeaderProps) {
         {NAV_LINKS.map((link) => (
           <Link
             key={link.label}
-            to={`/categoria/${link.label.toLowerCase().replace(' ', '-')}`}
+            to={`/categoria/${link.slug}`}
             className="flex items-center gap-1 text-xs uppercase tracking-wider font-normal text-swell-text-dark hover:text-swell-accent transition-colors"
           >
             {link.label}

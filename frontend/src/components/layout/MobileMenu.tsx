@@ -9,14 +9,11 @@ interface MobileMenuProps {
 }
 
 const NAV_LINKS = [
-  { label: 'NEW IN', hasDropdown: true, alert: 'novo!' },
-  { label: 'OCASIÕES', hasDropdown: true },
-  { label: 'COLEÇÕES', hasDropdown: true },
-  { label: 'BEST SELLERS', hasDropdown: false },
-  { label: 'ROUPAS', hasDropdown: true },
-  { label: 'ÚLTIMAS PEÇAS', hasDropdown: false, alert: 'vai acabar!' },
-  { label: 'SALE', hasDropdown: true },
-  { label: 'SOBRE', hasDropdown: true },
+  { label: 'NOVAS PEÇAS', slug: 'new-in', hasDropdown: false, alert: 'novo!' },
+  { label: 'ROUPAS', slug: 'roupas', hasDropdown: true },
+  { label: 'ÚLTIMAS PEÇAS', slug: 'ultimas-pecas', hasDropdown: false, alert: 'vai acabar!' },
+  { label: 'PROMOÇÕES', slug: 'sale', hasDropdown: false },
+  { label: 'SOBRE', slug: 'sobre', hasDropdown: false },
 ]
 
 export function MobileMenu({ isOpen, onClose, onOpenCart }: MobileMenuProps) {
@@ -72,7 +69,7 @@ export function MobileMenu({ isOpen, onClose, onOpenCart }: MobileMenuProps) {
           {NAV_LINKS.map((link) => (
             <li key={link.label} className="border-b border-swell-border last:border-b-0">
               <Link
-                to={`/categoria/${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                to={`/categoria/${link.slug}`}
                 className="flex items-center py-4 text-sm font-light text-[#444] tracking-wider"
                 onClick={onClose}
               >
