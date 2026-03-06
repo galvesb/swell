@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laguna Store - Clone UI</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Variáveis de Cores e Estilos */
+        :root {
+            --bg-color: #FAF9F7;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --accent-color: #A98F81; /* Nude/Marrom da Laguna */
+            --accent-hover: #91776b;
+            --alert-color: #E26E6E; /* Cor das tags 'novo!' e 'vai acabar!' */
+            --border-color: #E5E5E5;
+            --font-sans: 'Montserrat', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        /* Reset Básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+        /* Overlay para modais e sidebars */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+            opacity: 0; visibility: hidden;
+            transition: 0.3s ease;
+        }
+        .overlay.active { opacity: 1; visibility: visible; }
+
+        /* =========================================
+           HEADER (DESKTOP E MOBILE)
+           ========================================= */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* SVG da Logo (Concha) */
+        .logo-svg { width: 45px; height: auto; }
+
+        .desktop-nav { display: flex; gap: 25px; }
+        .desktop-nav a {
+            font-size: 12px; text-transform: uppercase;
+            letter-spacing: 1px; font-weight: 400; color: var(--text-dark);
+        }
+
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+        .header-icons i { font-size: 24px; cursor: pointer; font-weight: 300;}
+
+        .cart-icon { position: relative; display: flex; align-items: center; }
+        .cart-count {
+            position: absolute;
+            top: -2px; right: -6px;
+            background-color: var(--accent-color);
+            color: #fff;
+            font-size: 10px;
+            border-radius: 50%;
+            width: 16px; height: 16px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Escondidos no Desktop */
+        .header-left-mobile, .logo-mobile { display: none; }
+
+        /* =========================================
+           SIDEBARS GENÉRICAS
+           ========================================= */
+        .sidebar {
+            position: fixed; top: 0; height: 100vh;
+            background: #fff; z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.77, 0.2, 0.05, 1);
+            overflow-y: auto; box-shadow: -5px 0 15px rgba(0,0,0,0.05);
+        }
+        .sidebar.left { left: 0; width: 380px; transform: translateX(-100%); }
+        .sidebar.right { right: 0; width: 400px; transform: translateX(100%); }
+        .sidebar.active { transform: translateX(0); }
+
+        .sidebar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px; border-bottom: 1px solid var(--border-color);
+            font-family: var(--font-serif); font-size: 1.2rem;
+        }
+
+        /* =========================================
+           MENU MOBILE (SIDEBAR ESQUERDA) - NOVO LAYOUT
+           ========================================= */
+        .mobile-menu-top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; position: relative;
+        }
+        .logo-mobile-sidebar { position: absolute; left: 50%; transform: translateX(-50%); }
+        
+        .meus-pedidos-banner {
+            background-color: var(--accent-color); color: #fff;
+            margin: 10px 20px 20px; padding: 15px; text-align: center;
+            font-size: 14px; font-weight: 400; letter-spacing: 0.5px;
+        }
+
+        .mobile-nav-links { padding: 0 20px 30px; }
+        .mobile-nav-links li { list-style: none; }
+        .mobile-nav-links a {
+            display: flex; align-items: center; padding: 15px 0;
+            font-size: 14px; text-transform: uppercase;
+            font-weight: 300; color: #444; letter-spacing: 1px;
+        }
+        .mobile-nav-links .text { flex: 1; }
+        .mobile-nav-links .tag-alert {
+            color: var(--alert-color); font-size: 11px;
+            text-transform: lowercase; margin-right: 15px; font-style: italic;
+        }
+        .mobile-nav-links i.ph-plus { font-size: 16px; color: #999; }
+
+        /* =========================================
+           CARRINHO SIDEBAR E OUTROS
+           ========================================= */
+        .frete-bar {
+            background: var(--accent-color); color: #fff; text-align: center;
+            padding: 10px; font-size: 12px; display: flex; justify-content: center; gap: 10px;
+        }
+        .cart-items { padding: 20px; }
+        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; }
+        .cart-item img { width: 80px; height: 120px; object-fit: cover; }
+        .cart-item-details { flex: 1; font-size: 12px; }
+        .qty-selector { display: inline-flex; border: 1px solid var(--border-color); align-items: center; margin-top: 10px;}
+        .qty-selector button { padding: 5px 10px; }
+        .cart-footer {
+            position: absolute; bottom: 0; width: 100%; background: #fff; padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .btn-primary {
+            width: 100%; background: var(--accent-color); color: #fff;
+            padding: 15px; text-transform: uppercase; font-size: 14px; transition: 0.3s;
+        }
+
+        /* =========================================
+           PÁGINA ALFAIATARIA
+           ========================================= */
+        .breadcrumb {
+            text-align: left; padding: 30px 40px 0; font-size: 10px;
+            color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;
+        }
+        .category-header { text-align: center; padding: 20px 20px 40px; }
+        .category-header h2 { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 400; margin-bottom: 20px; }
+        .category-header p { max-width: 700px; margin: 0 auto; color: var(--text-light); font-size: 14px; font-weight: 300;}
+
+        .filter-bar { display: flex; justify-content: space-between; padding: 0 40px 20px; align-items: center; }
+        .grid-toggles i { font-size: 24px; color: var(--text-light); margin-right: 10px; cursor: pointer; }
+        .btn-filter { border: 1px solid var(--border-color); padding: 10px 20px; display: flex; gap: 10px; font-size: 12px; background: #fff; }
+
+        .product-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 0 40px 60px;
+        }
+        .product-card { position: relative; background: #fff; }
+        .product-image { position: relative; overflow: hidden; aspect-ratio: 2/3; }
+        .product-image img { width: 100%; height: 100%; object-fit: cover; }
+        .product-actions { position: absolute; top: 15px; right: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .product-actions button {
+            background: #fff; border-radius: 50%; width: 35px; height: 35px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 18px;
+        }
+
+        /* =========================================
+           RESPONSIVIDADE (MOBILE)
+           ========================================= */
+        @media (max-width: 900px) {
+            /* Esconde itens do desktop */
+            .desktop-nav, .logo-desktop, .desktop-only { display: none !important; }
+            
+            /* Mostra itens do mobile */
+            .header-left-mobile, .logo-mobile { display: flex; }
+
+            /* Reestrutura o Header para o modelo Exato dos Prints */
+            header {
+                padding: 15px 20px;
+                position: relative;
+            }
+            .header-left-mobile {
+                display: flex; gap: 15px; align-items: center; font-size: 26px; font-weight: 300;
+            }
+            .logo-mobile {
+                position: absolute; left: 50%; transform: translateX(-50%);
+            }
+            
+            /* Sidebar Menu Mobile - Ajuste de largura */
+            .sidebar.left { width: 90%; max-width: 350px; }
+            .sidebar.right { width: 90%; }
+
+            /* Layout da página */
+            .breadcrumb { padding: 20px 20px 0; }
+            .filter-bar { padding: 0 20px 20px; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); padding: 0 10px 40px; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+    <header>
+        <div class="header-left-mobile">
+            <button onclick="toggleSidebar('mobile-menu')"><i class="ph ph-list"></i></button>
+            <i class="ph ph-user"></i>
+        </div>
+
+        <a href="#" class="logo-desktop">
+            <svg class="logo-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M50 90 C30 90 10 70 15 45 C20 20 40 10 50 10 C60 10 80 20 85 45 C90 70 70 90 50 90 Z" />
+                <path d="M50 90 L50 10" />
+                <path d="M50 90 C40 60 25 30 15 45" />
+                <path d="M50 90 C60 60 75 30 85 45" />
+                <path d="M50 90 C45 50 35 20 30 15" />
+                <path d="M50 90 C55 50 65 20 70 15" />
+            </svg>
+        </a>
+
+        <nav class="desktop-nav">
+            <a href="#">New In <i class="ph ph-caret-down"></i></a>
+            <a href="#">Ocasiões <i class="ph ph-caret-down"></i></a>
+            <a href="#">Coleções <i class="ph ph-caret-down"></i></a>
+            <a href="#">Best Sellers</a>
+            <a href="#">Roupas <i class="ph ph-caret-down"></i></a>
+            <a href="#">Últimas Peças</a>
+            <a href="#">Sale <i class="ph ph-caret-down"></i></a>
+            <a href="#">Sobre <i class="ph ph-caret-down"></i></a>
+        </nav>
+
+        <a href="#" class="logo-mobile">
+            <svg class="logo-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M50 90 C30 90 10 70 15 45 C20 20 40 10 50 10 C60 10 80 20 85 45 C90 70 70 90 50 90 Z" />
+                <path d="M50 90 L50 10" />
+                <path d="M50 90 C40 60 25 30 15 45" />
+                <path d="M50 90 C60 60 75 30 85 45" />
+            </svg>
+        </a>
+
+        <div class="header-icons">
+            <i class="ph ph-heart desktop-only"></i>
+            <i class="ph ph-magnifying-glass"></i>
+            <i class="ph ph-user desktop-only"></i>
+            <div class="cart-icon" onclick="toggleSidebar('cart-sidebar')">
+                <i class="ph ph-tote"></i>
+                <span class="cart-count">1</span>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="sidebar left">
+        
+        <div class="mobile-menu-top-bar">
+            <div class="header-left-mobile">
+                <button onclick="closeAll()"><i class="ph ph-x"></i></button>
+                <i class="ph ph-user"></i>
+            </div>
+            
+            <a href="#" class="logo-mobile-sidebar">
+                <svg class="logo-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M50 90 C30 90 10 70 15 45 C20 20 40 10 50 10 C60 10 80 20 85 45 C90 70 70 90 50 90 Z" />
+                    <path d="M50 90 L50 10" />
+                    <path d="M50 90 C40 60 25 30 15 45" />
+                    <path d="M50 90 C60 60 75 30 85 45" />
+                </svg>
+            </a>
+            
+            <div class="header-icons">
+                <i class="ph ph-magnifying-glass"></i>
+                <div class="cart-icon" onclick="toggleSidebar('cart-sidebar')">
+                    <i class="ph ph-tote"></i>
+                    <span class="cart-count">1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="meus-pedidos-banner">Meus Pedidos</div>
+        
+        <ul class="mobile-nav-links">
+            <li><a href="#"><span class="text">NEW IN</span> <span class="tag-alert">novo!</span> <i class="ph ph-plus"></i></a></li>
+            <li><a href="#"><span class="text">OCASIÕES</span> <i class="ph ph-plus"></i></a></li>
+            <li><a href="#"><span class="text">COLEÇÕES</span> <i class="ph ph-plus"></i></a></li>
+            <li><a href="#"><span class="text">BEST SELLERS</span></a></li>
+            <li><a href="#"><span class="text">ROUPAS</span> <i class="ph ph-plus"></i></a></li>
+            <li><a href="#"><span class="text">ÚLTIMAS PEÇAS</span> <span class="tag-alert">vai acabar!</span></a></li>
+            <li><a href="#"><span class="text">SALE</span> <i class="ph ph-plus"></i></a></li>
+            <li><a href="#"><span class="text">SOBRE</span> <i class="ph ph-plus"></i></a></li>
+        </ul>
+        
+        <div style="padding: 0 20px;">
+            <img src="https://images.unsplash.com/photo-1515347619362-7dd3e215442e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" style="width: 100%; height: 200px; object-fit: cover;" alt="Coleção">
+        </div>
+    </div>
+
+    <div id="cart-sidebar" class="sidebar right">
+        <div class="sidebar-header">
+            <span>MINHA SACOLA (1)</span>
+            <button class="close-btn" onclick="closeAll()"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="frete-bar">
+            <i class="ph ph-truck"></i> Faltam R$ 280,00 para ganhar Frete Grátis
+        </div>
+        <div class="cart-items">
+            <div class="cart-item">
+                <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Macacão">
+                <div class="cart-item-details">
+                    <div style="text-transform: uppercase; margin-bottom: 5px;">MACACÃO CHIARA PRETO</div>
+                    <div style="margin-bottom: 10px;">R$ 419,90</div>
+                    <div>Tamanho: XPP</div>
+                    <div class="qty-selector">
+                        <button>-</button> <span>1</span> <button>+</button>
+                    </div>
+                </div>
+                <button><i class="ph ph-trash"></i></button>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <span>Subtotal</span>
+                <span style="text-align: right;"><strong>419,90</strong><br><small>6x de R$ 69,98</small></span>
+            </div>
+            <button class="btn-primary">Finalizar Compra</button>
+        </div>
+    </div>
+
+    <main>
+        <div class="breadcrumb">
+            INÍCIO &nbsp;&nbsp;&lt;&nbsp;&nbsp; ALFAIATARIA
+        </div>
+
+        <section>
+            <div class="category-header">
+                <h2>Alfaiataria</h2>
+                <p>Descubra a nossa coleção de alfaiataria, onde a qualidade e o estilo se encontram. Cada peça é cuidadosamente selecionada para atender às suas necessidades. Não perca a chance de adquirir roupas que não apenas se encaixam perfeitamente, mas também refletem seu senso de estilo.</p>
+            </div>
+
+            <div class="filter-bar">
+                <div class="grid-toggles">
+                    <i class="ph ph-square"></i>
+                    <i class="ph ph-squares-four"></i>
+                </div>
+                <button class="btn-filter" onclick="toggleSidebar('filter-sidebar')">
+                    Filtrar e Ordenar <i class="ph ph-faders"></i>
+                </button>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1550614000-4b95d4edfa21?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Roupa">
+                        <div class="product-actions">
+                            <button><i class="ph ph-tote"></i></button>
+                            <button><i class="ph ph-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1515347619362-7dd3e215442e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Roupa">
+                        <div class="product-actions">
+                            <button><i class="ph ph-tote"></i></button>
+                            <button><i class="ph ph-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1551163943-3f6a855d1153?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Roupa">
+                        <div class="product-actions">
+                            <button><i class="ph ph-tote"></i></button>
+                            <button><i class="ph ph-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Roupa">
+                        <div class="product-actions">
+                            <button><i class="ph ph-tote"></i></button>
+                            <button><i class="ph ph-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+
+        function toggleSidebar(id) {
+            const sidebar = document.getElementById(id);
+            const isActive = sidebar.classList.contains('active');
+            
+            closeAll(); // Garante que tudo feche antes de abrir um novo
+            
+            if(!isActive) {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden'; 
+            }
+        }
+
+        function closeAll() {
+            const elements = document.querySelectorAll('.sidebar, .modal, .overlay');
+            elements.forEach(el => el.classList.remove('active'));
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
