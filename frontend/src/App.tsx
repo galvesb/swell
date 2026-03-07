@@ -15,6 +15,7 @@ import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { AdminProductForm } from '@/pages/admin/AdminProductForm'
 import { AdminLayout } from '@/components/admin/AdminLayout'
 import { SiteSettingsPage } from '@/pages/admin/SiteSettingsPage'
+import { AdminCategoriesPage } from '@/pages/admin/AdminCategoriesPage'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useAuthStore } from '@/store/authStore'
 import { authApi } from '@/api/auth'
@@ -84,6 +85,7 @@ export default function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/produtos/:id" element={<AdminProductForm />} />
             <Route path="/admin/site" element={<SiteSettingsPage />} />
+            <Route path="/admin/site/categorias" element={<AdminCategoriesPage />} />
           </Route>
         </Route>
 

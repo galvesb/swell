@@ -2,6 +2,7 @@ import { useState, useEffect, FormEvent } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft } from '@phosphor-icons/react'
 import { productsApi } from '@/api/products'
+import { categoriesApi, type Category } from '@/api/categories'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 import type { Product } from '@/types/product'
 
@@ -14,9 +15,11 @@ export function AdminProductForm() {
   const navigate = useNavigate()
 
   const [product, setProduct] = useState<Product | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
   const [form, setForm] = useState({
     name: '',
     description: '',
+    category: '',
     price: '',
     sale_price: '',
     stock: '',
@@ -29,6 +32,10 @@ export function AdminProductForm() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    categoriesApi.list().then(setCategories).catch(() => {})
+  }, [])
+
+  useEffect(() => {
     if (isEditing && id) {
       productsApi.adminList(1, 100).then((res) => {
         const found = res.items.find((p) => p.id === id)
@@ -37,6 +44,7 @@ export function AdminProductForm() {
           setForm({
             name: found.name,
             description: found.description,
+            category: found.category,
             price: String(found.price),
             sale_price: found.sale_price ? String(found.sale_price) : '',
             stock: String(found.stock),
@@ -70,7 +78,7 @@ export function AdminProductForm() {
       const payload = {
         name: form.name,
         description: form.description,
-        category: 'roupas',
+        category: form.category,
         price: Number(form.price),
         sale_price: form.sale_price ? Number(form.sale_price) : null,
         stock: Number(form.stock),
@@ -129,6 +137,22 @@ export function AdminProductForm() {
             rows={4}
             className="w-full border border-swell-border px-4 py-3 text-sm focus:outline-none focus:border-swell-accent resize-none"
           />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label className="block text-xs uppercase tracking-wider mb-1.5">Categoria *</label>
+          <select
+            value={form.category}
+            onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+            required
+            className="w-full border border-swell-border px-4 py-3 text-sm focus:outline-none focus:border-swell-accent bg-white"
+          >
+            <option value="">Selecione uma categoria</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.slug}>{cat.name}</option>
+            ))}
+          </select>
         </div>
 
         {/* Price + Sale price + Stock */}

@@ -3,11 +3,13 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.core.security import decode_token
 from app.db.repositories.cart_repo import CartRepository
+from app.db.repositories.category_repo import CategoryRepository
 from app.db.repositories.product_repo import ProductRepository
 from app.db.repositories.user_repo import UserRepository
 from app.models.user import User
 from app.services.auth_service import AuthService
 from app.services.cart_service import CartService
+from app.services.category_service import CategoryService
 from app.services.product_service import ProductService
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
@@ -21,6 +23,10 @@ def get_product_repo() -> ProductRepository:
     return ProductRepository()
 
 
+def get_category_repo() -> CategoryRepository:
+    return CategoryRepository()
+
+
 def get_cart_repo() -> CartRepository:
     return CartRepository()
 
@@ -31,6 +37,10 @@ def get_auth_service(repo: UserRepository = Depends(get_user_repo)) -> AuthServi
 
 def get_product_service(repo: ProductRepository = Depends(get_product_repo)) -> ProductService:
     return ProductService(repo)
+
+
+def get_category_service(repo: CategoryRepository = Depends(get_category_repo)) -> CategoryService:
+    return CategoryService(repo)
 
 
 def get_cart_service(repo: CartRepository = Depends(get_cart_repo)) -> CartService:

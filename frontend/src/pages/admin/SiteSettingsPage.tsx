@@ -6,7 +6,7 @@ import type { SecondaryColor } from '@/types/settings'
 
 const COLOR_OPTIONS: { value: SecondaryColor; label: string }[] = [
   { value: '#A98F81', label: 'Original' },
-  { value: '#348b92', label: 'Verde Água' },
+  { value: '#348b92', label: 'Verde Agua' },
 ]
 
 export function SiteSettingsPage() {
@@ -67,7 +67,7 @@ export function SiteSettingsPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-10">
-      <h1 className="font-serif text-3xl mb-8">Editar Site</h1>
+      <h1 className="font-serif text-3xl mb-8">Geral</h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Nome da Loja */}

@@ -1,29 +1,14 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends
 
-from app.models.category import Category
+from app.api.deps import get_category_service
+from app.schemas.category import CategoryResponse
+from app.services.category_service import CategoryService
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 
 
-class CategoryResponse(BaseModel):
-    id: str
-    slug: str
-    name: str
-    description: str
-    order: int
-
-
 @router.get("", response_model=list[CategoryResponse])
-async def list_categories() -> list[CategoryResponse]:
-    categories = await Category.find_all().sort(Category.order).to_list()
-    return [
-        CategoryResponse(
-            id=str(c.id),
-            slug=c.slug,
-            name=c.name,
-            description=c.description,
-            order=c.order,
-        )
-        for c in categories
-    ]
+async def list_categories(
+    service: CategoryService = Depends(get_category_service),
+) -> list[CategoryResponse]:
+    return await service.list_categories()

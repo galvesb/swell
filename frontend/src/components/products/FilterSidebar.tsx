@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react'
 import { X } from '@phosphor-icons/react'
 import { useSearchParams } from 'react-router-dom'
+import { categoriesApi, type Category } from '@/api/categories'
 
 interface FilterSidebarProps {
   isOpen: boolean
@@ -24,6 +26,11 @@ const SORT_OPTIONS = [
 
 export function FilterSidebar({ isOpen, onClose }: FilterSidebarProps) {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    categoriesApi.list().then(setCategories).catch(() => {})
+  }, [])
 
   const getParam = (key: string) => searchParams.get(key) ?? ''
   const getParamArray = (key: string) => searchParams.getAll(key)
@@ -66,6 +73,27 @@ export function FilterSidebar({ isOpen, onClose }: FilterSidebarProps) {
         </div>
 
         <div className="px-6 py-6 space-y-8">
+          {/* Categories */}
+          {categories.length > 0 && (
+            <div>
+              <h3 className="text-xs uppercase tracking-wider font-medium mb-3">Categorias</h3>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => {
+                  const selected = getParam('category') === cat.slug
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setParam('category', selected ? '' : cat.slug)}
+                      className={`px-3 py-1.5 text-xs border transition-colors ${selected ? 'bg-swell-accent text-white border-swell-accent' : 'border-swell-border hover:border-swell-accent'}`}
+                    >
+                      {cat.name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Sort */}
           <div>
             <h3 className="text-xs uppercase tracking-wider font-medium mb-3">Ordenar por</h3>

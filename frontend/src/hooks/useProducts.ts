@@ -14,8 +14,12 @@ export function useProducts(category?: string) {
     setIsLoading(true)
     setError(null)
 
+    // "roupas" is the landing page — show all products, let sidebar filter by category
+    const categoryFromUrl = category && category !== 'roupas' ? category : undefined
+    const categoryFromFilter = searchParams.get('category') || undefined
+
     const filters = {
-      ...(category && { category }),
+      ...(categoryFromFilter ? { category: categoryFromFilter } : categoryFromUrl ? { category: categoryFromUrl } : {}),
       ...(searchParams.get('min_price') && { min_price: Number(searchParams.get('min_price')) }),
       ...(searchParams.get('max_price') && { max_price: Number(searchParams.get('max_price')) }),
       ...(searchParams.getAll('sizes').length && { sizes: searchParams.getAll('sizes') }),

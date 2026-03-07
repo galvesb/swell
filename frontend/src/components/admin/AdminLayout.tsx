@@ -1,37 +1,71 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { List, X } from '@phosphor-icons/react'
+import { List, X, CaretDown } from '@phosphor-icons/react'
 import { LogoSvg } from '@/components/layout/LogoSvg'
 
-const NAV = [
-  { label: 'Produtos', to: '/admin' },
-  { label: 'Editar Site', to: '/admin/site' },
+const SITE_SUBNAV = [
+  { label: 'Geral', to: '/admin/site' },
+  { label: 'Categorias', to: '/admin/site/categorias' },
 ]
 
 export function AdminLayout() {
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const isSiteSection = pathname.startsWith('/admin/site')
+  const [siteExpanded, setSiteExpanded] = useState(isSiteSection)
 
-  const navLinks = NAV.map((item) => {
-    const isActive =
-      item.to === '/admin'
-        ? pathname === '/admin'
-        : pathname.startsWith(item.to)
-    return (
+  const navLinkClass = (to: string, exact = false) => {
+    const isActive = exact ? pathname === to : pathname.startsWith(to)
+    return `px-6 py-3 text-sm font-sans transition-colors ${
+      isActive
+        ? 'border-l-2 border-swell-accent bg-swell-bg text-swell-accent'
+        : 'border-l-2 border-transparent text-swell-text-dark hover:text-swell-accent hover:bg-swell-bg'
+    }`
+  }
+
+  const navLinks = (
+    <>
       <Link
-        key={item.to}
-        to={item.to}
+        to="/admin"
         onClick={() => setMenuOpen(false)}
-        className={`px-6 py-3 text-sm font-sans transition-colors ${
-          isActive
-            ? 'border-l-2 border-swell-accent bg-swell-bg text-swell-accent'
+        className={navLinkClass('/admin', true)}
+      >
+        Produtos
+      </Link>
+      <button
+        onClick={() => setSiteExpanded((v) => !v)}
+        className={`px-6 py-3 text-sm font-sans transition-colors flex items-center justify-between w-full text-left ${
+          isSiteSection
+            ? 'border-l-2 border-swell-accent text-swell-accent'
             : 'border-l-2 border-transparent text-swell-text-dark hover:text-swell-accent hover:bg-swell-bg'
         }`}
       >
-        {item.label}
-      </Link>
-    )
-  })
+        Editar Site
+        <CaretDown
+          size={14}
+          className={`transition-transform ${siteExpanded ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {siteExpanded && (
+        <div className="flex flex-col">
+          {SITE_SUBNAV.map((sub) => (
+            <Link
+              key={sub.to}
+              to={sub.to}
+              onClick={() => setMenuOpen(false)}
+              className={`pl-10 pr-6 py-2.5 text-xs font-sans transition-colors ${
+                pathname === sub.to
+                  ? 'text-swell-accent bg-swell-bg'
+                  : 'text-swell-text-light hover:text-swell-accent hover:bg-swell-bg'
+              }`}
+            >
+              {sub.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
+  )
 
   return (
     <div className="min-h-screen flex flex-col">

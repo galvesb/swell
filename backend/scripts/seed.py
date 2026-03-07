@@ -17,14 +17,11 @@ from app.models.site_settings import SiteSettings
 
 
 CATEGORIES = [
-    {"slug": "new-in", "name": "New In", "description": "Novidades da semana", "order": 0},
-    {"slug": "ocasioes", "name": "Ocasiões", "description": "Looks para cada momento", "order": 1},
-    {"slug": "colecoes", "name": "Coleções", "description": "Nossas coleções exclusivas", "order": 2},
-    {"slug": "best-sellers", "name": "Best Sellers", "description": "Os mais amados", "order": 3},
-    {"slug": "roupas", "name": "Roupas", "description": "Linha completa de roupas", "order": 4},
-    {"slug": "ultimas-pecas", "name": "Últimas Peças", "description": "Corra, estoque limitado!", "order": 5},
-    {"slug": "sale", "name": "Sale", "description": "Promoções imperdíveis", "order": 6},
-    {"slug": "alfaiataria", "name": "Alfaiataria", "description": "Elegância e precisão", "order": 7},
+    {"slug": "vestidos", "name": "Vestidos", "description": "Nossa colecao de vestidos", "order": 0},
+    {"slug": "blusas", "name": "Blusas", "description": "Blusas e tops", "order": 1},
+    {"slug": "calcas", "name": "Calcas", "description": "Calcas e shorts", "order": 2},
+    {"slug": "macacoes", "name": "Macacoes", "description": "Macacoes e conjuntos", "order": 3},
+    {"slug": "blazers", "name": "Blazers", "description": "Blazers e alfaiataria", "order": 4},
 ]
 
 PRODUCTS = [
@@ -32,7 +29,7 @@ PRODUCTS = [
         "name": "Blazer Alfaiataria Preto",
         "slug": "blazer-alfaiataria-preto",
         "description": "Blazer de alfaiataria com caimento perfeito para todas as ocasiões.",
-        "category": "alfaiataria",
+        "category": "blazers",
         "tags": ["novos", "mais_vendidos", "principal"],
         "price": 599.90,
         "sale_price": None,
@@ -47,7 +44,7 @@ PRODUCTS = [
         "name": "Macacão Chiara",
         "slug": "macacao-chiara",
         "description": "Macacão elegante com tecido premium e acabamento impecável.",
-        "category": "roupas",
+        "category": "macacoes",
         "tags": ["mais_vendidos", "principal"],
         "price": 419.90,
         "sale_price": None,
@@ -65,7 +62,7 @@ PRODUCTS = [
         "name": "Vestido Midi Florido",
         "slug": "vestido-midi-florido",
         "description": "Vestido midi com estampa floral e tecido fluido.",
-        "category": "ocasioes",
+        "category": "vestidos",
         "tags": ["novos", "principal"],
         "price": 349.90,
         "sale_price": 279.90,
@@ -80,7 +77,7 @@ PRODUCTS = [
         "name": "Calça Wide Leg Branca",
         "slug": "calca-wide-leg-branca",
         "description": "Calça wide leg em tecido de alfaiataria. Última peça!",
-        "category": "alfaiataria",
+        "category": "calcas",
         "tags": ["ultimas_pecas", "promocoes"],
         "price": 289.90,
         "sale_price": 199.90,
